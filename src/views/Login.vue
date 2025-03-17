@@ -23,8 +23,9 @@ const message = useMessage()
 const userInfo = reactive<IUser>({
   username: '',
   password: '',
-  email: ''
+  email: '',
 })
+
 
 const rules = {
   username: {
@@ -87,19 +88,17 @@ const loginFunc = async () => {
   await login.post("", userInfo)
   .then(response => {
     console.log('登录成功:', response)
-
     console.log('登录成功:', response.data)
     if (response.status === 200) {
-      const userData = {
+      const storeUserInfo = {
         id: response.data.data.user_id,
         username: response.data.data.username,
-        password:'',
         email: response.data.data.email,
         role: response.data.data.role,
         token:response.data.data.token
       }
-      userStore.setUserInfo(userData)
-      userStore.setToken(response.data.data.token)
+      userStore.setStoreUserInfo(storeUserInfo)
+      
       message.success(response.data.message || '登录成功')
       console.log(userStore.logState);
       router.push('/home')

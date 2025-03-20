@@ -3,7 +3,7 @@ import { onMounted, ref, h } from 'vue'
 import { useUserStore } from '../store/user'
 import { useRouter } from 'vue-router'
 import { useMessage, NIcon } from 'naive-ui'
-import { HomeOutline } from '@vicons/ionicons5'
+import { PieChartOutline, AddCircleOutline, BookmarkOutline, DocumentTextOutline, PersonOutline } from '@vicons/ionicons5'
 const message = useMessage()
 const router = useRouter()
 const userStore = useUserStore()
@@ -22,75 +22,152 @@ const collapsed = ref(false)
 function renderIcon(icon: any) {
   return () => h(NIcon, { size: 20 }, { default: () => h(icon) })
 }
+const currentView = ref('home')
+const handleMenuClick = (key: string) => {
+  currentView.value = key
+}
 
 // 假设菜单选项数据
 const menuOptions = [
   {
-    label: () =>
-      h(
-        'a',
-        {
-          href: '/login',
-          // target: '_blank',
-          rel: 'noopenner noreferrer'
-        },
-        '主页'
-      ),
-    key: 'hear-the-wind-sing',
-    icon: renderIcon(HomeOutline)
+    label: '主页',
+    key: 'home',
+    icon: renderIcon(PieChartOutline)
   },
   {
-    label: '关于我们',
-    key: 'about',
-    icon: renderIcon(HomeOutline)
+    label: '添加记录',
+    key: 'add-record',
+    icon: renderIcon(AddCircleOutline)
   },
   {
-    label: '联系我们',
-    key: 'contact',
-    icon: renderIcon(HomeOutline)
-
-  }
+    label: '日志列表',
+    key: 'log-list',
+    icon: renderIcon(DocumentTextOutline)
+  },
+  {
+    label: '操作日志',
+    key: 'operation-log',
+    icon: renderIcon(BookmarkOutline)
+  },
+  {
+    label: '个人中心',
+    key: 'profile',
+    icon: renderIcon(PersonOutline)
+  },
+  /*    *跳转页面写法*      */
+  // {
+  //   label: () =>
+  //     h(
+  //       'a',
+  //       {
+  //         href: '/login',
+  //         // target: '_blank',
+  //         rel: 'noopenner noreferrer'
+  //       },
+  //       '个人中心'
+  //     ),
+  //   key: 'hear-the-wind-sing',
+  //   icon: renderIcon(PersonOutline)
+  // },
 ]
 
-console.log(menuOptions);
-
+const dropdownOptions = [
+  {
+    key: 'profile',
+    label: '个人信息',
+    icon: renderIcon(PersonOutline)
+  },
+  {
+    key: 'change-password',
+    label: '修改密码',
+    icon: renderIcon(PersonOutline)
+  },
+  {
+    key: 'logout',
+    label: '退出登录',
+    icon: renderIcon(PersonOutline)
+  }
+]
+const handleLogout = () => {
+  userStore.logout()
+  message.success('退出账号成功！')
+  setTimeout(() => {
+    window.location.reload()
+  }, 1000);
+}
+const handleSelect = (key: string) => {
+  switch (key) {
+    case 'logout':
+      handleLogout()
+      break
+    case 'profile':
+      currentView.value = 'profile'
+      break
+    case 'change-passwoed':
+      break
+  }
+}
 </script>
 
 <template>
   <n-layout>
-    <!-- header -->
+    <!-- header begin-->
     <n-layout>
       <n-card>
-        <!-- <n-icon id="HomeOutline" size="20">
-          <HomeOutline />
-        </n-icon>用户中心 -->
-        <!-- 控制侧边栏折叠的开关 -->
-      <n-icon> <img src="../assets/vue.svg" alt="用户中心" size="20"></n-icon>用户中心
-        <n-switch v-model:value="collapsed" />
-
-        <n-button type="error" >退出登录</n-button>
+        <div class="header" style="display: flex; justify-content: space-between;  align-items: center;">
+          <div>
+              <img src="../assets/vue.svg" alt="" style="width: 25px; height: 25px;">
+            用户中心
+            <n-switch v-model:value="collapsed" />
+          </div>
+          <div>
+            <n-dropdown :options="dropdownOptions" @select="handleSelect">
+              <n-button type="info" quaternary size="small" :render-icon="renderIcon(PersonOutline)">
+                个人中心
+              </n-button>
+            </n-dropdown>
+          </div>
+        </div>
       </n-card>
     </n-layout>
-
+    <!-- header end-->
+    <!-- sider begin-->
     <n-layout has-sider>
-      <!-- 侧边栏 -->
-
       <n-layout-sider bordered :collapsed="collapsed" :collapsed-width="64" :width="150" show-trigger
         @collapse="collapsed = true" @expand="collapsed = false">
         <!-- 侧边栏内容 -->
-        <n-menu :collapsed="collapsed" :options="menuOptions" />
+        <n-menu :collapsed="collapsed" :options="menuOptions" @update:value="handleMenuClick" />
       </n-layout-sider>
-
+      <!-- sider end-->
       <!-- 右侧内容部分 -->
       <n-layout>
         <n-space vertical>
-          <!-- 右侧内容 -->
-          <div v-if="!collapsed">
-            <p>这是右侧展开时的内容。</p>
-          </div>
-          <div v-else>
-            <p>这是右侧折叠时的内容。</p>
-            <h3>demo</h3>
+          <div class="content-area">
+            <template v-if="currentView === 'home'">
+              <h2>主页</h2>
+              <h2>欢迎来到主页</h2>
+              <p>这是主页内容</p>
+            </template>
+
+            <template v-else-if="currentView === 'add-record'">
+              <h2>添加记录</h2>
+              <p>这里是添加记录的表单</p>
+            </template>
+
+            <template v-else-if="currentView === 'log-list'">
+              <h2>日志列表</h2>
+              <p>这里显示日志列表内容</p>
+            </template>
+
+            <template v-else-if="currentView === 'operation-log'">
+              <h2>操作日志</h2>
+              <p>这里显示操作日志内容</p>
+            </template>
+
+            <template v-else-if="currentView === 'profile'">
+              <h2>个人中心</h2>
+              <p>这里显示个人信息内容</p>
+            </template>
           </div>
         </n-space>
       </n-layout>
@@ -99,4 +176,7 @@ console.log(menuOptions);
 </template>
 
 <style scoped>
+.content-area {
+  padding: 20px;
+}
 </style>

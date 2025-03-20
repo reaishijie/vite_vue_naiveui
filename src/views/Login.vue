@@ -4,7 +4,7 @@ import type { IUser } from '../types'
 import { login } from '../utils/auth'
 import { useMessage } from 'naive-ui'
 import type { FormInst } from 'naive-ui'
-import { LogInOutline } from '@vicons/ionicons5'
+import { LogInOutline, CheckmarkOutline } from '@vicons/ionicons5'
 import { useUserStore } from '../store/user'
 import {useRouter } from 'vue-router'
 import {onMounted} from 'vue'
@@ -129,6 +129,14 @@ const loginFunc = async () => {
               <LogInOutline />
             </n-icon>
             登 录</n-button>
+        </n-form-item>
+        <n-form-item>
+          <p>Don't have an account ?
+      <router-link to="Register"> <n-icon size="25">
+            <CheckmarkOutline />
+          </n-icon>
+          click here to Register</router-link>
+      </p>
         </n-form-item>
       </n-form>
     </n-card>

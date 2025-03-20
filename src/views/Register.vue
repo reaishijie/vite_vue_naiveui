@@ -112,7 +112,7 @@ const reset = () => {
           <n-input v-model:value="userInfo.username" placeholder="qq号/手机号"  :autofocus="true" :round="true"  />
         </n-form-item>
         <n-form-item label="密码：" path="password">
-          <n-input v-model:value="userInfo.password" type="password" show-password-on="click" placeholder="可以是123456（太简单了吧！）" :round="true" />
+          <n-input v-model:value="userInfo.password" type="password" show-password-on="click" placeholder="最好不是123456" :round="true" />
         </n-form-item>
         <n-form-item label="邮箱：" path="email">
           <n-input v-model:value="userInfo.email" type="email" placeholder="可以是你qq号@qq.com"  :round="true"/>

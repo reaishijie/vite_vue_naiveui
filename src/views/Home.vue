@@ -2,14 +2,14 @@
 import { onMounted, ref, h } from 'vue'
 import { useUserStore } from '../store/user'
 import { useRouter } from 'vue-router'
-import { useMessage, NIcon } from 'naive-ui'
-import { PieChartOutline, AddCircleOutline, BookmarkOutline, DocumentTextOutline, PersonOutline, KeyOutline, LogOutOutline, MedicalOutline } from '@vicons/ionicons5'
+import { useMessage, NIcon, NCard, NButton, NLayout, NMenu, NSpace, NDropdown, NLayoutHeader, NLayoutSider  } from 'naive-ui'
+import { PieChartOutline, AddCircleOutline, BookmarkOutline, DocumentTextOutline, PersonOutline, KeyOutline, LogOutOutline, MedicalOutline, ListOutline, Reload } from '@vicons/ionicons5'
 import Log from '../components/Log.vue'
 import LogList from '../components/LogList.vue'
+import AddLog from '../components/AddLog.vue'
 const message = useMessage()
 const router = useRouter()
 const userStore = useUserStore()
-
 onMounted(() => {
   if (!userStore.logState) {
     message.error('请先登录账号')
@@ -19,6 +19,9 @@ onMounted(() => {
 
 // 控制侧边栏折叠的状态
 const collapsed = ref(false)
+const changeCollapsed = () => {
+  collapsed.value = !collapsed.value
+}
 
 // renderIcon 函数：动态渲染图标
 function renderIcon(icon: any) {
@@ -109,38 +112,55 @@ const handleSelect = (key: string) => {
       break
   }
 }
+const handleRefresh = () => {
+  window.location.reload()
+}
+
+//handsome  同款
+console.log("\n %c 存在网 " + " Pro %c cunzai.net", "color:#fff;background:linear-gradient(90deg,#448bff,#44e9ff);padding:5px 0;", "color:#000;background:linear-gradient(90deg,#44e9ff,#ffffff);padding:5px 10px 5px 0px;");
+
 </script>
 
 <template>
-  <n-layout>
+  <!-- sider begin-->
+  <n-layout has-sider>
+    <n-layout-sider bordered :collapsed="collapsed" :collapsed-width="64" :width="150" show-trigger
+      collapse-mode="width" @collapse="collapsed = true" @expand="collapsed = false">
+      <div style="display: flex; text-align: center;">
+        <img src="../assets/vue.svg" alt="" style="display: flex; margin: 10px;">
+        <span v-if="!collapsed" style="display: flex; margin-left: 10px; margin-top: 20px;">用户中心</span>
+      </div>
+      <!-- 侧边栏内容 -->
+      <n-menu :collapsed="collapsed" :collapsed-icon-size="22" :options="menuOptions" @update:value="handleMenuClick" />
+    </n-layout-sider>
+    <!-- sider end-->
     <!-- header begin-->
     <n-layout>
-      <n-card>
-        <div class="header" style="display: flex; justify-content: space-between;  align-items: center;">
-          <div>
-              <img src="../assets/vue.svg" alt="" style="width: 25px; height: 25px;">
-            用户中心
-            <n-switch v-model:value="collapsed" />
+      <n-layout-header>
+        <n-card>
+          <div class="header" style="display: flex; justify-content: space-between;  align-items: center;">
+            <div>
+              <n-icon @click="changeCollapsed" style="cursor: pointer;" size="25" >
+                <ListOutline />
+              </n-icon>
+              <n-icon @click="handleRefresh" style="cursor: pointer;" size="20" id="reload">
+                <Reload />
+              </n-icon>
+            </div>
+            <div>
+              <n-dropdown :options="dropdownOptions" @select="handleSelect">
+                <n-button type="info" quaternary size="small">
+                  <img
+                    :src="'http://q.qlogo.cn/headimg_dl?dst_uin=' + (userStore.storeUserInfo?.username && !isNaN(Number(userStore.storeUserInfo.username)) ? userStore.storeUserInfo.username : '2900383833') + '&spec=640&img_type=svg'"
+                    alt="touxiang" style="display: flex; width: 20px; padding-right: 10px;">
+                  {{ userStore.storeUserInfo?.username }}
+                </n-button>
+              </n-dropdown>
+            </div>
           </div>
-          <div>
-            <n-dropdown :options="dropdownOptions" @select="handleSelect">
-              <n-button type="info" quaternary size="small" :render-icon="renderIcon(PersonOutline)">
-                {{userStore.storeUserInfo?.username}}
-              </n-button>
-            </n-dropdown>
-          </div>
-        </div>
-      </n-card>
-    </n-layout>
-    <!-- header end-->
-    <!-- sider begin-->
-    <n-layout has-sider>
-      <n-layout-sider bordered :collapsed="collapsed" :collapsed-width="64" :width="150" show-trigger
-      collapse-mode="width" @collapse="collapsed = true" @expand="collapsed = false">
-        <!-- 侧边栏内容 -->
-        <n-menu :collapsed="collapsed" :collapsed-icon-size="22" :options="menuOptions" @update:value="handleMenuClick" />
-      </n-layout-sider>
-      <!-- sider end-->
+        </n-card>
+      </n-layout-header>
+      <!-- header end-->
       <!-- 右侧内容部分 -->
       <n-layout>
         <n-space vertical>
@@ -152,8 +172,7 @@ const handleSelect = (key: string) => {
             </template>
 
             <template v-else-if="currentView === 'add-record'">
-              <h2>添加记录</h2>
-              <p>这里是添加记录的表单</p>
+              <AddLog />
             </template>
 
             <template v-else-if="currentView === 'log-list'">
@@ -180,5 +199,8 @@ const handleSelect = (key: string) => {
 <style scoped>
 .content-area {
   padding: 20px;
+}
+#reload {
+  margin-left: 20px;
 }
 </style>

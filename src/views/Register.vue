@@ -3,7 +3,7 @@ import { reactive,ref } from 'vue'
 import { register } from '../utils/auth'
 import { type IUser } from '../types/index'
 import { LogInOutline, Sync, CheckmarkOutline } from '@vicons/ionicons5'
-import { useMessage, NIcon,type FormInst } from 'naive-ui'
+import { useMessage, NIcon,type FormInst, NCard, NForm, NInput, NButton, NFormItem } from 'naive-ui'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 const message = useMessage()
@@ -79,20 +79,12 @@ const registerFunc = () => {
       return
     }
     register.post('', userInfo)
-      .then(response => {
+      .then(()=> {
         message.success('注册成功')
-        console.log('注册成功:', response.data)
-        router.push({
-          path: '/login',
-          query: {
-            username: "response.data.username",
-            password: "response.data.password"
-          }
-        })
+        router.push('/login')
       })
       .catch(error => {
         message.error('注册失败：' + (error.response?.data?.message || '未知错误'))
-        console.error('注册失败:', error)
       })
   })
 }
@@ -115,7 +107,7 @@ const reset = () => {
           <n-input v-model:value="userInfo.password" type="password" show-password-on="click" placeholder="最好不是123456" :round="true" />
         </n-form-item>
         <n-form-item label="邮箱：" path="email">
-          <n-input v-model:value="userInfo.email" type="email" placeholder="可以是你qq号@qq.com"  :round="true"/>
+          <n-input v-model:value="userInfo.email" type="text" placeholder="可以是你qq号@qq.com"  :round="true"/>
         </n-form-item>
       </n-form>
       <n-button type="primary" @click="registerFunc" :round="true" id="registerButton" >

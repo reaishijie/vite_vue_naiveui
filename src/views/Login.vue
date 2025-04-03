@@ -2,7 +2,7 @@
 import { reactive,ref } from 'vue'
 import type { IUser } from '../types'
 import { login } from '../utils/auth'
-import { useMessage } from 'naive-ui'
+import { useMessage, NCard, NForm, NInput, NButton, NFormItem, NIcon } from 'naive-ui'
 import type { FormInst } from 'naive-ui'
 import { LogInOutline, CheckmarkOutline } from '@vicons/ionicons5'
 import { useUserStore } from '../store/user'
@@ -87,8 +87,6 @@ const loginFunc = async () => {
   })
   await login.post("", userInfo)
   .then(response => {
-    console.log('登录成功:', response)
-    console.log('登录成功:', response.data)
     if (response.status === 200) {
       const storeUserInfo = {
         id: response.data.data.user_id,
@@ -100,7 +98,6 @@ const loginFunc = async () => {
       userStore.setStoreUserInfo(storeUserInfo)
       
       message.success(response.data.message || '登录成功')
-      console.log(userStore.logState);
       router.push('/home')
     } else {
       message.error(response.data.message || '登录失败')
@@ -108,7 +105,6 @@ const loginFunc = async () => {
   })
     .catch(error => {
       message.error('登录失败：' + (error.response?.data?.message || '未知错误'))
-      console.error('登录失败：:', error)
     })
 }
 </script>

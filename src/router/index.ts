@@ -3,7 +3,6 @@ const routes = [
     {
         name:'home',
         path : "/home",
-        alias:['/index','/'],
         component: () => import ('../views/Home.vue')
     },
     {
@@ -14,6 +13,7 @@ const routes = [
     {
         name:'login',
         path : "/login",
+        alias:['/index','/'],
         component: () => import ('../views/Login.vue')
     },
 ]

@@ -19,7 +19,6 @@ export const useUserStore = defineStore('user',()=>{
         token.value = ''
         logState.value = false
     }
-
     return {
         storeUserInfo,
         setStoreUserInfo,

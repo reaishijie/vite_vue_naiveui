@@ -3,7 +3,9 @@ import { onMounted, ref, h } from 'vue'
 import { useUserStore } from '../store/user'
 import { useRouter } from 'vue-router'
 import { useMessage, NIcon } from 'naive-ui'
-import { PieChartOutline, AddCircleOutline, BookmarkOutline, DocumentTextOutline, PersonOutline } from '@vicons/ionicons5'
+import { PieChartOutline, AddCircleOutline, BookmarkOutline, DocumentTextOutline, PersonOutline, KeyOutline, LogOutOutline, MedicalOutline } from '@vicons/ionicons5'
+import Log from '../components/Log.vue'
+import LogList from '../components/LogList.vue'
 const message = useMessage()
 const router = useRouter()
 const userStore = useUserStore()
@@ -30,7 +32,7 @@ const handleMenuClick = (key: string) => {
 // 假设菜单选项数据
 const menuOptions = [
   {
-    label: '主页',
+    label: '控制台',
     key: 'home',
     icon: renderIcon(PieChartOutline)
   },
@@ -75,17 +77,17 @@ const dropdownOptions = [
   {
     key: 'profile',
     label: '个人信息',
-    icon: renderIcon(PersonOutline)
+    icon: renderIcon(MedicalOutline)
   },
   {
     key: 'change-password',
     label: '修改密码',
-    icon: renderIcon(PersonOutline)
+    icon: renderIcon(KeyOutline)
   },
   {
     key: 'logout',
     label: '退出登录',
-    icon: renderIcon(PersonOutline)
+    icon: renderIcon(LogOutOutline)
   }
 ]
 const handleLogout = () => {
@@ -123,7 +125,7 @@ const handleSelect = (key: string) => {
           <div>
             <n-dropdown :options="dropdownOptions" @select="handleSelect">
               <n-button type="info" quaternary size="small" :render-icon="renderIcon(PersonOutline)">
-                个人中心
+                {{userStore.storeUserInfo?.username}}
               </n-button>
             </n-dropdown>
           </div>
@@ -134,9 +136,9 @@ const handleSelect = (key: string) => {
     <!-- sider begin-->
     <n-layout has-sider>
       <n-layout-sider bordered :collapsed="collapsed" :collapsed-width="64" :width="150" show-trigger
-        @collapse="collapsed = true" @expand="collapsed = false">
+      collapse-mode="width" @collapse="collapsed = true" @expand="collapsed = false">
         <!-- 侧边栏内容 -->
-        <n-menu :collapsed="collapsed" :options="menuOptions" @update:value="handleMenuClick" />
+        <n-menu :collapsed="collapsed" :collapsed-icon-size="22" :options="menuOptions" @update:value="handleMenuClick" />
       </n-layout-sider>
       <!-- sider end-->
       <!-- 右侧内容部分 -->
@@ -155,13 +157,13 @@ const handleSelect = (key: string) => {
             </template>
 
             <template v-else-if="currentView === 'log-list'">
-              <h2>日志列表</h2>
-              <p>这里显示日志列表内容</p>
+              <LogList></LogList>
             </template>
 
             <template v-else-if="currentView === 'operation-log'">
               <h2>操作日志</h2>
               <p>这里显示操作日志内容</p>
+              <Log />
             </template>
 
             <template v-else-if="currentView === 'profile'">

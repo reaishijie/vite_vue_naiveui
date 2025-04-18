@@ -167,8 +167,18 @@ console.log("\n %c 存在网 " + " Pro %c cunzai.net", "color:#fff;background:li
           <div class="content-area">
             <template v-if="currentView === 'home'">
               <h2>主页</h2>
-              <h2>欢迎来到主页</h2>
-              <p>这是主页内容</p>
+              <div style="display: flex; justify-content: center; align-items: center;">
+                <div style="display: flex;margin: 20px;">
+                  <n-card>1
+
+                  </n-card>
+                </div>
+                <div>
+                  <n-card>2
+
+                  </n-card>
+                </div>
+              </div>
             </template>
 
             <template v-else-if="currentView === 'add-record'">
